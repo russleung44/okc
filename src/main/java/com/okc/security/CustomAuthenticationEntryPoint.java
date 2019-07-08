@@ -2,8 +2,8 @@ package com.okc.security;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.okc.common.vo.ResultInfo;
 import com.okc.common.constants.SystemErrorCode;
+import com.okc.common.vo.ResultInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setStatus(401);
         PrintWriter printWriter = httpServletResponse.getWriter();
-        log.error("[error]",e);
+        log.error("未授权");
         printWriter.write(JSON.toJSONString( new ResultInfo<>(SystemErrorCode.UNAUTHORIZED), SerializerFeature.WriteMapNullValue));
         printWriter.flush();
     }

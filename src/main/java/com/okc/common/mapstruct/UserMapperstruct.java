@@ -1,6 +1,6 @@
 package com.okc.common.mapstruct;
 
-import com.okc.common.model.User;
+import com.okc.mgb.model.User;
 import com.okc.common.vo.UserVO;
 
 import org.mapstruct.Mapper;

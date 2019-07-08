@@ -12,8 +12,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Enumeration;
 
 
+@SuppressWarnings("Duplicates")
 @Slf4j
 @Component
 public class AopLogUtil {
@@ -48,7 +50,7 @@ public class AopLogUtil {
         Object[] args = joinPoint.getArgs();
         StringBuilder params = new StringBuilder();
         for (Object object: args){
-            params.append(object);
+            params.append(object).append(" ");
         }
         // 切点签名
         Signature signature = joinPoint.getSignature();
@@ -91,8 +93,7 @@ public class AopLogUtil {
      */
     public static void errorLog(JoinPoint joinPoint, Throwable ex) {
 
-        log.error("异常输出()");
-
+        log.error("=========异常输出()=========");
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
@@ -112,7 +113,7 @@ public class AopLogUtil {
         Object[] args = joinPoint.getArgs();
         StringBuilder params = new StringBuilder();
         for (Object object: args){
-            params.append(object);
+            params.append(object).append(" ");
         }
         // 切点签名
         Signature signature = joinPoint.getSignature();
@@ -125,6 +126,35 @@ public class AopLogUtil {
         log.error("异常请求方式:{}", method);
         log.error("异常请求IP:{}", ip);
         log.error("异常请求方法:{}", className + "." + methodName);
+        log.error("异常token:{}", token);
+        log.error("异常请求参数:{}", params);
+        log.error("异常信息:{}", ex.getMessage());
+
+    }
+
+    public static void globalExLog(HttpServletRequest request, Throwable ex) {
+
+        log.error("=========异常输出()=========");
+
+        // token
+        String token = request.getHeader("Authorization");
+        // 请求方式
+        String method = request.getMethod();
+        // URL
+        String url = request.getRequestURL().toString();
+        // 请求IP
+        String ip = CommonUtil.getIp(request);
+        // 请求参数
+        Enumeration<String> parameterNames = request.getParameterNames();
+        StringBuilder params = new StringBuilder();
+        while(parameterNames.hasMoreElements()) {
+            String name = parameterNames.nextElement();
+            String value = request.getParameter(name);
+            params.append(value).append(" ");
+        }
+        log.error("异常请求地址:{}", url);
+        log.error("异常请求方式:{}", method);
+        log.error("异常请求IP:{}", ip);
         log.error("异常token:{}", token);
         log.error("异常请求参数:{}", params);
         log.error("异常信息:{}", ex.getMessage());

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication()
-@MapperScan(basePackages = {"com.okc.common.mapper"})
+@MapperScan(basePackages = {"com.okc.mgb.model.mapper"})
 public class OkcApplication {
 
     public static void main(String[] args) {

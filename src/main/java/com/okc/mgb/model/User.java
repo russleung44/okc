@@ -1,4 +1,4 @@
-package com.okc.common.model;
+package com.okc.mgb.model;
 
 import java.io.Serializable;
 import javax.persistence.*;

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "login")
@@ -31,10 +32,10 @@ public class LoginController {
 
     @ApiOperation(value = "登陆")
     @PostMapping(value = "/login")
-    public ResultInfo login() throws BusinessException {
+    public ResultInfo login(@RequestParam String username, @RequestParam String password) throws BusinessException {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken("user", "psw");
+                new UsernamePasswordAuthenticationToken(username, password);
 
         Authentication authentication;
         try {

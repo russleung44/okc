@@ -1,22 +1,19 @@
 package com.okc.controller;
 
-
-
 import com.okc.common.vo.ResultInfo;
-import com.okc.common.vo.UserVO;
-import com.okc.error.BusinessException;
+import com.okc.error.CustomNullPointerException;
+import com.okc.mgb.model.User;
 import com.okc.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@Api(tags = "test")
-@RequestMapping("/test")
+@Api(tags = "用户接口")
 public class UserController {
 
     private UserService userService;
@@ -25,11 +22,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/user")
-    @ApiOperation(value = "测试接口")
-    public ResultInfo<UserVO> helloWorld(@ApiParam(value = "用户ID") @RequestParam(value = "userId") Integer userId) throws BusinessException {
+    @GetMapping(value = "/users")
+    @ApiOperation(value = "用户列表")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResultInfo<List<User>> getUsers() throws CustomNullPointerException {
 
-        return new ResultInfo<>(userService.test(userId));
+        return new ResultInfo<>(userService.getUsers());
 
     }
 }

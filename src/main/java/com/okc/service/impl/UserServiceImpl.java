@@ -1,14 +1,16 @@
 package com.okc.service.impl;
 
-import com.okc.common.mapper.UserMapper;
+import com.okc.error.CustomNullPointerException;
+import com.okc.mgb.mapper.UserMapper;
 import com.okc.common.mapstruct.UserMapperstruct;
-import com.okc.common.model.User;
-import com.okc.common.vo.UserVO;
-import com.okc.common.constants.UserErrorCode;
+import com.okc.mgb.model.User;
 import com.okc.error.BusinessException;
 import com.okc.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -24,14 +26,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
     @Override
-    public UserVO test(Integer userId) throws BusinessException {
-
-        User user = userMapper.selectByPrimaryKey(userId);
-        if (user != null) {
-            return userMapperstruct.toUserVO(user);
-        }
-
-        throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
+    public List<User> getUsers() throws CustomNullPointerException {
+        return Optional.ofNullable(userMapper.selectAll()).orElseThrow(CustomNullPointerException::new);
     }
 }

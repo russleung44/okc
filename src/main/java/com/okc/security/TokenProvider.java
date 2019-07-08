@@ -30,7 +30,7 @@ public class TokenProvider {
 
     @PostConstruct
     public void init() {
-        this.secretKey = "okc";
+        this.secretKey = "b49a7bdab7a3bd751d263f7cfd92879e";
 
         int millisecondIn1day = 1000 * 60 * 60 * 24;
         this.tokenValidityInMillisecondsForRememberMe = millisecondIn1day * 7L;
