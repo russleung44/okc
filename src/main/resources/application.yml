@@ -14,7 +14,8 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1/okc?characterEncoding=utf8&useSSL=false
     username: root
-    password: root
+    # password: root 加密
+    password: f/tckopM28+TT7JuuMYCOyqLiZfh9PPG8dzP9LwjCB9QcNtOSLsMQ+aDrcRtQOMy4wIioPR50G/bT3tUyrTdbw==
     driver-class-name: com.mysql.jdbc.Driver
     #阿里druid数据库连接池配置
     druid:
@@ -25,7 +26,7 @@ spring:
       stat-view-servlet.allow: true
       min-evictable-idle-time-millis: 100000
       filters: config
-      connectionProperties: config.decrypt=true;config.decrypt.key=${publickey}
+      connectionProperties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAI983Q/NI149Kft+dNpkPAg1XQb3WXNr4Sjb7VtOjA2u8IuOunFTNs7JapJeByayTma0pK5lkRtm5a2T0/s79Y8CAwEAAQ==
 
   #文件大小限制
   servlet:
@@ -76,6 +77,8 @@ fdfs:
 
 ignore:
   urls:
+    - /
+    - /druid/**
     - /login
     - /test/**
     - /fdfs/**

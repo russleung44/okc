@@ -20,6 +20,7 @@
         <springfox-swagger2.version>2.7.0</springfox-swagger2.version>
         <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
         <org.mapstruct.mapstruct-jdk8.version>1.2.0.Final</org.mapstruct.mapstruct-jdk8.version>
+        <druid-spring-boot-starter.version>1.1.18</druid-spring-boot-starter.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -107,6 +108,12 @@
             <version>5.1.47</version>
             <scope>runtime</scope>
         </dependency>
+        <!--阿里连接池-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid-spring-boot-starter.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -126,12 +133,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-   <!--     <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox-swagger2.version}</version>
-        </dependency>
--->
+
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
