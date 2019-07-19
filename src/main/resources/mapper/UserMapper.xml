@@ -5,12 +5,16 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="CHAR" property="username" />
+    <result column="password" jdbcType="CHAR" property="password" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
   </resultMap>
   <select id="loadUserByName" resultType="com.okc.mgb.model.User">
     SELECT * FROM user;
   </select>
+    <select id="selectByUserName" resultType="com.okc.mgb.model.User">
+      SELECT * FROM user WHERE username = #{username}
+    </select>
 
 </mapper>

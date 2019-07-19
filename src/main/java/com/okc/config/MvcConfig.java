@@ -1,6 +1,6 @@
 package com.okc.config;
 
-import com.okc.filter.CustomCorsFilter;
+import com.okc.filter.MyCorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -16,8 +16,8 @@ import java.util.List;
 public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
-    public CustomCorsFilter corsFilter() {
-        return new CustomCorsFilter();
+    public MyCorsFilter corsFilter() {
+        return new MyCorsFilter();
     }
 
     /**

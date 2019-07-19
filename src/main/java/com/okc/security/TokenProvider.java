@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +37,7 @@ public class TokenProvider {
 
     /**
      * 根据权限创建Token
+     *
      * @param authentication
      * @return
      */
@@ -58,7 +58,19 @@ public class TokenProvider {
     }
 
     /**
+     * token验证
+     *
+     * @param authToken
+     * @return
+     */
+    public boolean validateToken(String authToken) {
+        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+        return true;
+    }
+
+    /**
      * 解析token获取权限
+     *
      * @param token
      * @return
      */
@@ -73,24 +85,7 @@ public class TokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-    }
-
-    /**
-     * token验证
-     * @param authToken
-     * @return
-     */
-    public boolean validateToken(String authToken) {
-        try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
-            return true;
-        } catch (Exception e) {
-            log.error("token验证失败", e);
-            return false;
-        }
+        return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
     }
 
 }

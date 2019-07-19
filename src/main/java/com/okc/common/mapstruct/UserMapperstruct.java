@@ -6,14 +6,15 @@ import com.okc.common.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapperstruct {
 
     /**
      * User映射UserVO
-     * @param user
+     * @param users
      * @return
      */
-    @Mapping(source = "username", target = "nickName")
-    UserVO toUserVO(User user);
+    List<UserVO> toUserVOS(List<User> users);
 }

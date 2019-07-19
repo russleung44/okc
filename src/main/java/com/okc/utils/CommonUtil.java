@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 
@@ -75,12 +75,12 @@ public class CommonUtil {
      * @param str
      * @return
      */
-    public static String getMD5(String str) {
+    public static String MD5(String str) {
         try {
             // 生成一个MD5加密计算摘要
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-            byte[] md5Byte = md5.digest(str.getBytes("UTF8"));
+            byte[] md5Byte = md5.digest(str.getBytes(StandardCharsets.UTF_8));
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < md5Byte.length; i++) {
                 sb.append(hex[(md5Byte[i] & 0xff) / 16]);
@@ -93,6 +93,7 @@ public class CommonUtil {
         return null;
     }
 
-
-
+    public static String decryptAndMD5(String str) {
+        return MD5(RSAUtil.decrypt(str));
+    }
 }

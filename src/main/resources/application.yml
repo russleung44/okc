@@ -124,15 +124,15 @@ spring:
       max-request-size: "100MB"
       resolve-lazily: true
 
-mybatis:
-  type-aliases-package: com.okc.mgb.model
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-mapper:
-  not-empty: false
-  identity: MYSQL
-  mappers: tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.MySqlMapper
+#mybatis:
+#  type-aliases-package: com.okc.mgb.model
+#  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#mapper:
+#  not-empty: false
+#  identity: MYSQL
+#  mappers: tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.MySqlMapper
 #分页
 pagehelper:
   helperDialect: mysql

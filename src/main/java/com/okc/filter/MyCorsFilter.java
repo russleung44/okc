@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomCorsFilter extends OncePerRequestFilter {
+public class MyCorsFilter extends OncePerRequestFilter {
 
     private static final String OPTIONS = "OPTIONS";
 

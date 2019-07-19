@@ -9,11 +9,10 @@
         <!--通用mapper插件-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.MySqlMapper"/>
+            <property name="mappers" value="com.okc.base.BaseMapper"/>
             <property name="caseSensitive" value="true"/>
             <property name="forceAnnotation" value="true"/>
-            <property name="beginningDelimiter" value="`"/>
-            <property name="endingDelimiter" value="`"/>
+            <property name="lombok" value="Getter, Setter, ToString, Accessors"/>
         </plugin>
 
         <!--去掉MBG注释 保留数据库注释-->
@@ -36,8 +35,8 @@
 
         <sqlMapGenerator targetPackage="mapper" targetProject="src\main\resources"/>
 
-        <javaClientGenerator targetPackage="com.okc.mgb.model.mapper" targetProject="src/main/java"
-                             type="XMLMAPPER"/>
+        <javaClientGenerator targetPackage="com.okc.mgb.mapper" targetProject="src/main/java"
+                             type="XMLMAPPER" />
 
         <table tableName="%">
             <generatedKey column="id" sqlStatement="Mysql"/>

@@ -41,8 +41,8 @@ public class GlobalExceptionHandle {
      * @return ResultInfo
      */
     @ResponseBody
-    @ExceptionHandler(CustomNullPointerException.class)
-    public ResultInfo handleCustomNullPointerException(CustomNullPointerException ex) {
+    @ExceptionHandler(NullOrEmptyException.class)
+    public ResultInfo handleCustomNullPointerException(NullOrEmptyException ex) {
         log.error("异常码: " + ex.getCode() + ", 异常信息: " + ex.getMessage());
         return new ResultInfo(ex.getCode(), ex.getMessage());
 

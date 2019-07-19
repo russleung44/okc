@@ -1,7 +1,7 @@
 package com.okc.controller;
 
 import com.okc.common.vo.ResultInfo;
-import com.okc.error.CustomNullPointerException;
+import com.okc.error.NullOrEmptyException;
 import com.okc.mgb.model.User;
 import com.okc.service.UserService;
 import io.swagger.annotations.Api;
@@ -25,9 +25,9 @@ public class UserController {
     @GetMapping(value = "/users")
     @ApiOperation(value = "用户列表")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResultInfo<List<User>> getUsers() throws CustomNullPointerException {
+    public ResultInfo<List<User>> getUsers() throws NullOrEmptyException {
 
-        return new ResultInfo<>(userService.getUsers());
+        return new ResultInfo<>(userService.getAll());
 
     }
 }

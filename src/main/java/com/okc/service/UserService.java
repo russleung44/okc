@@ -1,18 +1,14 @@
 package com.okc.service;
 
-import com.okc.error.BusinessException;
-import com.okc.error.CustomNullPointerException;
+import com.okc.base.BaseService;
+import com.okc.error.NullOrEmptyException;
 import com.okc.mgb.model.User;
 
 import java.util.List;
 
 
-public interface UserService {
+public interface UserService extends BaseService<User> {
 
-    /**
-     * 用户列表
-     * @return
-     * @throws CustomNullPointerException
-     */
-    List<User> getUsers() throws CustomNullPointerException;
+
+    List getUsers() throws NullOrEmptyException;
 }

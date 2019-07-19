@@ -1,7 +1,6 @@
 package com.okc.config;
 
-
-import com.okc.filter.CustomCorsFilter;
+import com.okc.filter.MyCorsFilter;
 import com.okc.security.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -15,66 +14,64 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private TokenProvider tokenProvider;
-    private CustomCorsFilter customCorsFilter;
-    private CustomAuthenticationProvider customAuthenticationProvider;
-    private FilterIgnorePropertiesConfig filterIgnorePropertiesConfig;
+    private MyCorsFilter myCorsFilter;
+    private MyAuthenticationProvider myAuthenticationProvider;
+    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
+    private MyAccessDeniedHandler accessDeniedHandler;
 
-    public WebSecurityConfig(TokenProvider tokenProvider, CustomCorsFilter customCorsFilter, CustomAuthenticationProvider customAuthenticationProvider, FilterIgnorePropertiesConfig filterIgnorePropertiesConfig) {
+    public WebSecurityConfig(TokenProvider tokenProvider, com.okc.filter.MyCorsFilter myCorsFilter, MyAuthenticationProvider myAuthenticationProvider, MyFilterSecurityInterceptor myFilterSecurityInterceptor, MyAccessDeniedHandler accessDeniedHandler) {
         this.tokenProvider = tokenProvider;
-        this.customCorsFilter = customCorsFilter;
-        this.customAuthenticationProvider = customAuthenticationProvider;
-        this.filterIgnorePropertiesConfig = filterIgnorePropertiesConfig;
+        this.myCorsFilter = myCorsFilter;
+        this.myAuthenticationProvider = myAuthenticationProvider;
+        this.myFilterSecurityInterceptor = myFilterSecurityInterceptor;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(customAuthenticationProvider);
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http.authorizeRequests();
-        // 过滤接口
-        filterIgnorePropertiesConfig.getUrls().forEach(url -> registry.antMatchers(url).permitAll());
-
         http
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                .and()
-                .addFilterBefore(customCorsFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                // 禁止跨域处理
-                .and()
+                // 禁用跨域处理
                 .csrf().disable()
                 // 禁用session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 所有请求需要授权
                 .and()
-                .authorizeRequests()
-                .anyRequest().authenticated()
-//                .anyRequest().permitAll()
+                .authorizeRequests().anyRequest().authenticated()
+                // 自定义权限拒绝处理类
                 .and()
-                .apply(securityConfigurerAdapter());
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                // 添加自定义权限过滤器
+                .and()
+                .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
+                // 登录校验
+                .addFilterBefore(myCorsFilter, UsernamePasswordAuthenticationFilter.class)
+                // JWT校验
+                .apply(new JwtConfigurer(tokenProvider));
 
     }
 
     @Override
     public void configure(WebSecurity web) {
-        // AuthenticationTokenFilter will ignore the below paths
+        // 过滤请求
         web.ignoring()
                 .antMatchers(
                         HttpMethod.GET,
@@ -86,12 +83,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.txt",
                         "/**/*.js"
-                );
+                )
+                .antMatchers("/")
+                .antMatchers("/user/login")
+                .antMatchers("/fdfs/**")
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/", "/v2/api-docs")
+
+        ;
     }
 
     @Bean
     public AccessDecisionManager accessDecisionManager() {
-        return new CustomAccessDecisionManager();
+        return new MyAccessDecisionManager();
     }
 
     @Bean
@@ -100,15 +103,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    private CustomAuthenticationEntryPoint authenticationEntryPoint() {
-        return new CustomAuthenticationEntryPoint();
-    }
-
-    private CustomAccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
-    }
-
-    private JwtConfigurer securityConfigurerAdapter() {
-        return new JwtConfigurer(tokenProvider);
-    }
 }
