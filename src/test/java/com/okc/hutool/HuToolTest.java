@@ -1,6 +1,7 @@
 package com.okc.hutool;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.junit.Test;
@@ -17,6 +18,7 @@ public class HuToolTest {
 
     @Test
     public void collTest() {
+
 
         ArrayList<Object> objects = new ArrayList<>();
 
