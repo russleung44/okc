@@ -5,9 +5,8 @@ import com.okc.common.constants.SystemErrorCode;
 import com.okc.common.vo.Result;
 import com.okc.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,13 +15,13 @@ import java.io.PrintWriter;
 
 /**
  * @author TonyLeung
+ * @date 2020/6/21
  */
 @Slf4j
-@Component
-public class MyAccessDeniedHandler implements AccessDeniedHandler {
+public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
         log.error(
                 "请求的url: {},请求的header头: {},请求的IP地址: {}",
                 request.getRequestURL().toString(),
@@ -30,9 +29,9 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
                 CommonUtil.getIp(request));
 
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(403);
+        response.setStatus(401);
         PrintWriter printWriter = response.getWriter();
-        printWriter.write(JSONUtil.toJsonPrettyStr(new Result<>(SystemErrorCode.FORBIDDEN)));
+        printWriter.write(JSONUtil.toJsonPrettyStr(new Result<>(SystemErrorCode.UNAUTHORIZED)));
         printWriter.flush();
     }
 }

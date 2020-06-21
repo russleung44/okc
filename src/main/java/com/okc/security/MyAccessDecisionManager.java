@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
+/**
+ * @author TonyLeung
+ */
 @Component
 public class MyAccessDecisionManager implements AccessDecisionManager {
 

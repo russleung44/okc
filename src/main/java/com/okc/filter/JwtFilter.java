@@ -1,7 +1,7 @@
 package com.okc.filter;
 
+import cn.hutool.core.util.StrUtil;
 import com.okc.security.TokenProvider;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
@@ -29,24 +28,18 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        try {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            String token = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(token) && TokenProvider.validateToken(token)) {
-                Authentication authentication = TokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            filterChain.doFilter(servletRequest, servletResponse);
-        } catch (ExpiredJwtException eje) {
-            log.info("Security exception for user {} - {}",
-                    eje.getClaims().getSubject(), eje.getMessage());
 
-            log.trace("Security exception trace: ()", eje);
-            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        String token = resolveToken(httpServletRequest);
+        if (StrUtil.isNotBlank(token) && TokenProvider.validateToken(token)) {
+            Authentication authentication = TokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+        filterChain.doFilter(servletRequest, servletResponse);
+
     }
 
-    private String resolveToken(HttpServletRequest request){
+    private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(7);

@@ -1,8 +1,6 @@
 package com.okc.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -39,12 +36,10 @@ public class TokenProvider {
         long tokenValidityTime = 1000 * 60 * 60 * 24 * 7L;
         Date validity = new Date(now + tokenValidityTime);
 
-        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
-
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS512, encodeSecretKey)
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY.getBytes())
                 .setExpiration(validity)
                 .compact();
     }
@@ -56,9 +51,17 @@ public class TokenProvider {
      * @return
      */
     public static boolean validateToken(String authToken) {
-        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
-        Jwts.parser().setSigningKey(encodeSecretKey).parseClaimsJws(authToken);
-        return true;
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY.getBytes()).parseClaimsJws(authToken);
+            return true;
+        } catch (ExpiredJwtException e) {
+            log.error("token已过期:{}", authToken);
+        } catch (UnsupportedJwtException e) {
+            log.error("token格式错误:{}", authToken);
+        } catch (SignatureException e) {
+            log.error("签名验证失败:{}", authToken);
+        }
+        return false;
     }
 
     /**
@@ -68,9 +71,8 @@ public class TokenProvider {
      * @return
      */
     public static Authentication getAuthentication(String token) {
-        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
         Claims claims = Jwts.parser()
-                .setSigningKey(encodeSecretKey)
+                .setSigningKey(SECRET_KEY.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
 

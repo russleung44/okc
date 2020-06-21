@@ -25,17 +25,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final TokenProvider tokenProvider;
-    private final MyAuthenticationProvider myAuthenticationProvider;
-    private final MyAccessDeniedHandler accessDeniedHandler;
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(myAuthenticationProvider);
+        auth.authenticationProvider(new MyAuthenticationProvider());
     }
 
     @Override
@@ -46,12 +42,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 禁用session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // 允许所有请求
+                // 所有请求需要token
                 .and()
-                .authorizeRequests().anyRequest().permitAll()
+                .authorizeRequests().anyRequest().authenticated()
                 // 自定义权限拒绝处理类
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .exceptionHandling()
+                // 403处理器
+                .accessDeniedHandler(new MyAccessDeniedHandler())
+                // 401处理器
+                .authenticationEntryPoint(new MyAuthenticationEntryPoint())
                 // 添加自定义权限过滤器
                 .and()
                 // JWT校验
