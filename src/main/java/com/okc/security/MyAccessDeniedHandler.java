@@ -3,7 +3,7 @@ package com.okc.security;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.okc.common.constants.SystemErrorCode;
-import com.okc.common.vo.ResultInfo;
+import com.okc.common.vo.Result;
 import com.okc.utils.AopLogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,7 +25,7 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(403);
         PrintWriter printWriter = response.getWriter();
         AopLogUtil.globalExLog(request, e);
-        printWriter.write(JSON.toJSONString( new ResultInfo<>(SystemErrorCode.FORBIDDEN), SerializerFeature.WriteMapNullValue));
+        printWriter.write(JSON.toJSONString( new Result<>(SystemErrorCode.FORBIDDEN), SerializerFeature.WriteMapNullValue));
         printWriter.flush();
     }
 }

@@ -33,7 +33,8 @@ public class MySecurityMetadataSource implements
         map = new HashMap<>(50);
         Collection<ConfigAttribute> configAttributes ;
         ConfigAttribute cfg;
-        List<Permission> permissions = null;
+        // TODO 获取所有请求权限
+        List<Permission> permissions = new ArrayList<>();
         for(Permission permission : permissions) {
             configAttributes  = new ArrayList<>();
             cfg = new SecurityConfig(permission.getName());

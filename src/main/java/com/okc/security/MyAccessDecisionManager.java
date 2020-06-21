@@ -36,6 +36,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
         if ("tony".equals(authentication.getPrincipal())) {
             return;
         }
+
         for (ConfigAttribute attribute : configAttributes) {
             String needPermission = attribute.getAttribute();
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

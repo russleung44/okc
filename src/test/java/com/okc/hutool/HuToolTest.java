@@ -1,8 +1,6 @@
 package com.okc.hutool;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,21 +28,7 @@ public class HuToolTest {
     @Test
     public void jsonTest() {
 
-        JSONObject obj = JSONUtil.createObj();
-        obj.put("nothing", "yes");
-        obj.put("okc", "westbrook");
 
-        String jsonStr = JSONUtil.toJsonStr(obj);
-        System.out.println(jsonStr);
-
-        boolean isJson = JSONUtil.isJson(jsonStr);
-        System.out.println(isJson);
-
-        String formatJsonStr = JSONUtil.formatJsonStr(jsonStr);
-        System.out.println(formatJsonStr);
-
-        JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
-        System.out.println(jsonObject);
 
     }
 }

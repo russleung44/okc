@@ -1,6 +1,6 @@
 package com.okc.controller;
 
-import com.okc.common.vo.ResultInfo;
+import com.okc.common.vo.Result;
 import com.okc.error.NullOrEmptyException;
 import com.okc.mgb.model.User;
 import com.okc.service.UserService;
@@ -16,7 +16,7 @@ import java.util.List;
 @Api(tags = "用户接口")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -25,9 +25,9 @@ public class UserController {
     @GetMapping(value = "/users")
     @ApiOperation(value = "用户列表")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResultInfo<List<User>> getUsers() throws NullOrEmptyException {
+    public Result<List<User>> getUsers() throws NullOrEmptyException {
 
-        return new ResultInfo<>(userService.getAll());
+        return new Result<>(userService.getAll());
 
     }
 }

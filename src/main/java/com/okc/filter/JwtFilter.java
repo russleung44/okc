@@ -1,6 +1,5 @@
 package com.okc.filter;
 
-import com.okc.security.JwtConfigurer;
 import com.okc.security.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,20 +20,20 @@ import java.io.IOException;
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
 
-    private TokenProvider tokenProvider;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public JwtFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    public static final String AUTHORIZATION_TOKEN = "access_token";
+
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         try {
             HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            String jwt = resolveToken(httpServletRequest);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Authentication authentication = this.tokenProvider.getAuthentication(jwt);
+            String token = resolveToken(httpServletRequest);
+            if (StringUtils.hasText(token) && TokenProvider.validateToken(token)) {
+                Authentication authentication = TokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(servletRequest, servletResponse);
@@ -48,12 +47,11 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     private String resolveToken(HttpServletRequest request){
-        String bearerToken = request.getHeader(JwtConfigurer.AUTHORIZATION_HEADER);
-        String tokenPrefix = "Bearer ";
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(tokenPrefix)) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(7);
         }
-        String jwt = request.getParameter(JwtConfigurer.AUTHORIZATION_TOKEN);
+        String jwt = request.getParameter(AUTHORIZATION_TOKEN);
         if (StringUtils.hasText(jwt)) {
             return jwt;
         }

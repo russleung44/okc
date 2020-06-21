@@ -128,7 +128,7 @@ public class AopLogUtil {
         log.error("异常请求方法:{}", className + "." + methodName);
         log.error("异常token:{}", token);
         log.error("异常请求参数:{}", params);
-        log.error("异常信息:{}", ex.getMessage());
+        log.error("异常信息:", ex);
 
     }
 
@@ -157,7 +157,7 @@ public class AopLogUtil {
         log.error("异常请求IP:{}", ip);
         log.error("异常token:{}", token);
         log.error("异常请求参数:{}", params);
-        log.error("异常信息:{}", ex.getMessage());
+        log.error("异常信息:", ex);
 
     }
 }

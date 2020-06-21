@@ -10,8 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -20,20 +20,9 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
-
     private static final String AUTHORITIES_KEY = "auth";
 
-    private String secretKey;
-
-    private long tokenValidityInMillisecondsForRememberMe;
-
-    @PostConstruct
-    public void init() {
-        this.secretKey = "b49a7bdab7a3bd751d263f7cfd92879e";
-
-        int millisecondIn1day = 1000 * 60 * 60 * 24;
-        this.tokenValidityInMillisecondsForRememberMe = millisecondIn1day * 7L;
-    }
+    private static final String SECRET_KEY = "okc";
 
     /**
      * 根据权限创建Token
@@ -41,18 +30,21 @@ public class TokenProvider {
      * @param authentication
      * @return
      */
-    public String createToken(Authentication authentication) {
+    public static String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+        long tokenValidityTime = 1000 * 60 * 60 * 24 * 7L;
+        Date validity = new Date(now + tokenValidityTime);
+
+        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(SignatureAlgorithm.HS512, encodeSecretKey)
                 .setExpiration(validity)
                 .compact();
     }
@@ -63,8 +55,9 @@ public class TokenProvider {
      * @param authToken
      * @return
      */
-    public boolean validateToken(String authToken) {
-        Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+    public static boolean validateToken(String authToken) {
+        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
+        Jwts.parser().setSigningKey(encodeSecretKey).parseClaimsJws(authToken);
         return true;
     }
 
@@ -74,9 +67,10 @@ public class TokenProvider {
      * @param token
      * @return
      */
-    public Authentication getAuthentication(String token) {
+    public static Authentication getAuthentication(String token) {
+        byte[] encodeSecretKey = Base64.getEncoder().encode(SECRET_KEY.getBytes());
         Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
+                .setSigningKey(encodeSecretKey)
                 .parseClaimsJws(token)
                 .getBody();
 

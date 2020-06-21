@@ -1,7 +1,7 @@
 package com.okc.error;
 
 import com.okc.common.constants.SystemErrorCode;
-import com.okc.common.vo.ResultInfo;
+import com.okc.common.vo.Result;
 import com.okc.utils.AopLogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -30,9 +30,9 @@ public class GlobalExceptionHandle {
      */
     @ResponseBody
     @ExceptionHandler(BusinessException.class)
-    public ResultInfo handleBusinessException(BusinessException e) {
+    public Result handleBusinessException(BusinessException e) {
         log.error(e.getMessage());
-        return new ResultInfo(e.getCode(), e.getMessage());
+        return new Result(e.getCode(), e.getMessage());
     }
 
     /**
@@ -42,9 +42,9 @@ public class GlobalExceptionHandle {
      */
     @ResponseBody
     @ExceptionHandler(NullOrEmptyException.class)
-    public ResultInfo handleCustomNullPointerException(NullOrEmptyException ex) {
+    public Result handleCustomNullPointerException(NullOrEmptyException ex) {
         log.error("异常码: " + ex.getCode() + ", 异常信息: " + ex.getMessage());
-        return new ResultInfo(ex.getCode(), ex.getMessage());
+        return new Result(ex.getCode(), ex.getMessage());
 
     }
 
@@ -57,11 +57,11 @@ public class GlobalExceptionHandle {
      */
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResultInfo handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public Result handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
 
         log.error(ex.getMessage());
 
-        return new ResultInfo(SystemErrorCode.PARAM_ERROR);
+        return new Result(SystemErrorCode.PARAM_ERROR);
 
     }
 
@@ -73,7 +73,7 @@ public class GlobalExceptionHandle {
      */
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultInfo handleHttpMessageNotReadableException(MethodArgumentNotValidException ex) {
+    public Result handleHttpMessageNotReadableException(MethodArgumentNotValidException ex) {
 
         log.error(ex.getParameter().toString());
         log.error(ex.getMessage());
@@ -84,7 +84,7 @@ public class GlobalExceptionHandle {
             errorMsg.append(error.getDefaultMessage()).append(";");
         }
 
-        return new ResultInfo(901, errorMsg.toString());
+        return new Result(901, errorMsg.toString());
 
     }
 
@@ -97,20 +97,20 @@ public class GlobalExceptionHandle {
      */
     @ResponseBody
     @ExceptionHandler(MultipartException.class)
-    public ResultInfo handleHttpMessageNotReadableException(MultipartException ex) {
+    public Result handleHttpMessageNotReadableException(MultipartException ex) {
 
         log.error(ex.getMessage());
-        return new ResultInfo(902, "文件过大, 不能超过~M");
+        return new Result(902, "文件过大, 不能超过~M");
 
     }
 
 
     @ResponseBody
     @ExceptionHandler(MissingServletRequestPartException.class)
-    public ResultInfo handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
+    public Result handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
 
         log.error(ex.getMessage());
-        return new ResultInfo(903, "缺少请求参数");
+        return new Result(903, "缺少请求参数");
 
     }
 
@@ -123,8 +123,8 @@ public class GlobalExceptionHandle {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     @AfterThrowing(throwing = "ex", pointcut = "operationLog()")
-    public ResultInfo handleException(Exception ex, HttpServletRequest request) {
+    public Result handleException(Exception ex, HttpServletRequest request) {
         AopLogUtil.globalExLog(request, ex);
-        return new ResultInfo(ex.getMessage());
+        return new Result(ex.getMessage());
     }
 }

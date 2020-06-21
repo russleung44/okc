@@ -3,8 +3,6 @@ package com.okc.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -17,6 +15,7 @@ import java.io.InputStreamReader;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 
 /**
@@ -47,7 +46,7 @@ public class RSAUtil {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] enBytes = cipher.doFinal(plainText.getBytes());
-            return (new BASE64Encoder()).encode(enBytes);
+            return Base64.getEncoder().encodeToString(enBytes);
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
@@ -67,7 +66,7 @@ public class RSAUtil {
             String publicKeyString = loadKey(resource.getInputStream());
             cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(publicKeyString));
             byte[] enBytes = cipher.doFinal(plainText.getBytes());
-            return (new BASE64Encoder()).encode(enBytes);
+            return Base64.getEncoder().encodeToString(enBytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,9 +84,9 @@ public class RSAUtil {
     public static String decrypt(PrivateKey privateKey, String enStr) {
         try {
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] deBytes = cipher.doFinal((new BASE64Decoder()).decodeBuffer(enStr));
+            byte[] deBytes = cipher.doFinal(Base64.getDecoder().decode(enStr));
             return new String(deBytes);
-        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException e) {
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
         return null;
@@ -108,7 +107,7 @@ public class RSAUtil {
         try {
             String privateKeyString = loadKey(resource.getInputStream());
             cipher.init(Cipher.DECRYPT_MODE, getPrivateKey(privateKeyString));
-            deBytes = cipher.doFinal((new BASE64Decoder()).decodeBuffer(enStr));
+            deBytes = cipher.doFinal((Base64.getDecoder().decode(enStr)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +143,7 @@ public class RSAUtil {
      */
     private static PublicKey getPublicKey(String keyString) throws Exception {
         byte[] keyBytes;
-        keyBytes = (new BASE64Decoder()).decodeBuffer(keyString);
+        keyBytes = Base64.getDecoder().decode(keyString);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(keySpec);
@@ -158,7 +157,7 @@ public class RSAUtil {
      */
     private static PrivateKey getPrivateKey(String keyString) throws Exception {
         byte[] keyBytes;
-        keyBytes = (new BASE64Decoder()).decodeBuffer(keyString);
+        keyBytes = Base64.getDecoder().decode(keyString);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(keySpec);

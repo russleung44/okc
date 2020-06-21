@@ -8,37 +8,37 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultInfo<T> {
+public class Result<T> {
 
     private Integer code;
     private String message;
     private T data;
 
-    public ResultInfo(T data) {
+    public Result(T data) {
         this.code = 200;
         this.message = "请求成功";
         this.data = data;
     }
 
-    public ResultInfo(String message) {
+    public Result(String message) {
         this.code = 500;
         this.message = message;
         this.data = null;
     }
 
-    public ResultInfo(T data, String message) {
+    public Result(T data, String message) {
         this.code = 500;
         this.message = message;
         this.data = data;
     }
 
-    public ResultInfo(Integer code, String message) {
+    public Result(Integer code, String message) {
         this.code = code;
         this.message = message;
         this.data = null;
     }
 
-    public ResultInfo(SystemErrorCode systemErrorCode) {
+    public Result(SystemErrorCode systemErrorCode) {
         this.code = systemErrorCode.getCode();
         this.message = systemErrorCode.getMsg();
         this.data = null;

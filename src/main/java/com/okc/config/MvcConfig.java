@@ -1,6 +1,6 @@
 package com.okc.config;
 
-import com.okc.filter.MyCorsFilter;
+import com.okc.filter.CrossFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -15,9 +15,13 @@ import java.util.List;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
+    /**
+     * 跨域过滤器
+     * @return
+     */
     @Bean
-    public MyCorsFilter corsFilter() {
-        return new MyCorsFilter();
+    public CrossFilter crossFilter() {
+        return new CrossFilter();
     }
 
     /**

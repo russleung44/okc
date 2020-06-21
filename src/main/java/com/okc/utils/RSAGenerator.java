@@ -1,11 +1,11 @@
 package com.okc.utils;
 
 import lombok.Getter;
-import sun.misc.BASE64Encoder;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.*;
+import java.util.Base64;
 
 /**
  * @author tony
@@ -62,6 +62,6 @@ public class RSAGenerator {
      */
     private static String getKeyString(Key key) throws Exception {
         byte[] keyBytes = key.getEncoded();
-        return (new BASE64Encoder()).encode(keyBytes);
+        return Base64.getEncoder().encodeToString(keyBytes);
     }
 }
