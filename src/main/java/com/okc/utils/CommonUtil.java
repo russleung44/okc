@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,20 @@ public class CommonUtil {
     private static Integer FIFTEEN = 15;
 
     private static String SEPARATOR = ",";
+
+
+    /**
+     * 元转分
+     * @param yuan
+     * @return
+     */
+    public static Integer yuan2fen(String yuan) {
+        return new BigDecimal(yuan).setScale(2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).intValue();
+    }
+
+
+
+
 
 
     /**
