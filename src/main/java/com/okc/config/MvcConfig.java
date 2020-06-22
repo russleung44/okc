@@ -1,7 +1,5 @@
 package com.okc.config;
 
-import com.okc.filter.CrossFilter;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -15,14 +13,6 @@ import java.util.List;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    /**
-     * 跨域过滤器
-     * @return
-     */
-    @Bean
-    public CrossFilter crossFilter() {
-        return new CrossFilter();
-    }
 
     /**
      * 视图控制器
